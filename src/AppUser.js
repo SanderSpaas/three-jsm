@@ -34,7 +34,6 @@ import {
 }
 from 'three/examples/jsm/loaders/objLoader.js';
 import saveFile from "easy-file-saver";
-
 (function () {
 	var script = document.createElement('script');
 	script.onload = function () {
@@ -133,24 +132,11 @@ class App {
 		}); // init like this
 		renderer.shadowMap.enabled = true;
 		renderer.setClearColor(0xffffff, 0); // second param is opacity, 0 => transparent
-		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setSize(window.innerWidth, window.innerHeight );
 		document.getElementById('container').appendChild(renderer.domElement);
 
 
-		{ //gui gaan declareren
-			gui = new GUI();
-			guiRooms = new GUI();
-			information = gui.addFolder('General information');
-			folderLocal = gui.addFolder('Room information');
-			scale = folderLocal.addFolder('Scale');
-			guiRooms.add(rooms, 'Spawn2x2');
-			guiRooms.add(rooms, 'Spawn3x1');
-			guiRooms.add(rooms, 'Spawn4x2');
-			guiRooms.add(rooms, 'Spawn4x3');
-			guiRooms.add(rooms, 'Spawn5x3');
-			guiRooms.add(rooms, 'Spawn6x4');
-			guiRooms.add(rooms, 'SaveScene');
-		} { //panningcontrol and transformcontrols
+		{ //panningcontrol and transformcontrols
 			control = new TransformControls(camera, renderer.domElement);
 			control.showY = false;
 			control.setRotationSnap(45 * Math.PI / 180);
@@ -168,7 +154,7 @@ class App {
 
 		{ //label rendering
 			labelRenderer = new CSS2DRenderer();
-			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.setSize(window.innerWidth , window.innerHeight);
 			labelRenderer.domElement.style.position = 'absolute';
 			labelRenderer.domElement.style.top = '0px';
 			labelRenderer.domElement.style.pointerEvents = 'none';
@@ -192,11 +178,8 @@ class App {
 		const onMouseMove = (event) => {
 			// calculate pointer position in normalized device coordinates
 			// (-1 to +1) for both components
-			var rect = renderer.domElement.getBoundingClientRect();
-			pointer.x = ((event.clientX - rect.left) / (rect.width - rect.left)) * 2 - 1;
-			pointer.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
-			// pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-			// pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
 			raycaster.setFromCamera(pointer, camera);
 			const intersects = raycaster.intersectObjects(scene.children, true);
@@ -210,40 +193,7 @@ class App {
 
 						var objectGroup = intersects[0].object.parent;
 						if (!objectGroup.isScene) {
-							{ //editing of objects in the scene
-								//de parent van het object zoeken en dan alle kinderen aanspreken
-								controllers = gui.controllersRecursive();
-								for (let j = 0; j < controllers.length; j++) {
-									controllers[j].destroy();
-								}
 
-								information.add(objectGroup.children[0], 'name');
-								information.add(objectGroup, 'id').listen();
-								console.log(objectGroup);
-								for (let j = 0; j < objectGroup.children.length; j++) {
-									if (objectGroup.children[j].type === 'Mesh') {
-										let color = {
-											colorObject: {
-												r: objectGroup.children[j].material.color.r,
-												g: objectGroup.children[j].material.color.g,
-												b: objectGroup.children[j].material.color.b
-											}
-										};
-										information.addColor(color, 'colorObject').onChange(function (value) {
-											console.log('changing color', value);
-											objectGroup.children[j].material.color.setRGB(value.r, value.g, value.b);
-										});
-									}
-								}
-
-								let url = information.add(objectGroup.userData, 'URL').listen();
-
-								//position of the room
-								xPos = folderLocal.add(objectGroup.position, 'x').listen();
-								zPos = folderLocal.add(objectGroup.position, 'z').listen();
-								xScale = scale.add(objectGroup.scale, 'x').listen();
-								zScale = scale.add(objectGroup.scale, 'z').listen();
-							}
 
 							for (let j = 0; j < objectGroup.children.length; j++) {
 								// console.log(objectGroup.children[j].type);
@@ -252,15 +202,10 @@ class App {
 								}
 								if (objectGroup.children[j].name === 'tag') {
 									objectGroup.children[j].visible = true;
-									// console.log('deselecting tag', objectGroup.children[j]);
-									//editing the text of tags 
-									tagText = information.add(objectGroup.children[j].element, 'textContent').listen().onChange(function (value) {
-										objectGroup.userData.TAGNAME = value;
-									});
+								
+									
 								}
-								// adding drag controleerStp// transform gizmo
-								control.attach(objectGroup)
-								scene.add(control)
+
 							}
 						}
 					}
@@ -281,7 +226,7 @@ class App {
 								// console.log('deselecting tag', objectGroup.children[j]);
 							}
 						}
-						control.detach();
+
 					}
 					previousIntersection = INTERSECTED.parent;
 					INTERSECTED = null;
@@ -312,60 +257,6 @@ class App {
 		window.addEventListener('mousemove', onMouseMove);
 		window.addEventListener('mousedown', onMouseDown);
 		window.addEventListener('resize', onWindowResize, false);
-		control.addEventListener('mouseDown', function () {
-			controls.enabled = false;
-			// control.object.updateMatrix();
-
-		})
-		control.addEventListener('mouseUp', function () {
-			controls.enabled = true;
-			// var target = new THREE.Vector3(); // create once an reuse it
-			// control.object.getWorldPosition(target);
-			// console.log("world pos: ", target);
-
-			// if (control.object.position.y < 0) {
-			// 	console.log("triggered below 0 ")
-			// 	control.object.position.y = 0;
-			// }
-		})
-
-		window.addEventListener('keydown', function (event) {
-			switch (event.code) {
-				case 'KeyB':
-					controls.enabled = !controls.enabled;
-					console.log("Movement is now: " + controls.enabled);
-					break;
-				case 'KeyR':
-					spawnCostumRoom(5, 0, 5, 5, 6, 7, "hall");
-					break;
-				case 'KeyT':
-					spawnRoom(colorYellow, 0, 0, 0, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room");
-					break;
-				case 'KeyA':
-					control.mode = 'rotate';
-					control.showY = true;
-					control.showX = false;
-					control.showZ = false;
-					break;
-				case 'KeyC':
-					control.mode = 'translate';
-					control.showY = false;
-					control.showX = true;
-					control.showZ = true;
-					break;
-			}
-
-		})
-		// Converts from degrees to radians.
-		Math.degToRad = function (degrees) {
-			return degrees * Math.PI / 180;
-		};
-		// spawnCostumRoom(5, 0, 5, 5, 4, 7, "edit me");
-		// spawnRoom(colorYellow, -40.991732766624885, 0, -15.226050214000935, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room");
-		// spawnRoom(colorYellow, -33.10596524027343, 0, -14.468243335405898, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room");
-		// SpawnFBXRoom(colorYellow, -40.991732766624885, 0, -15.226050214000935, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room", "rec_3x1.5.fbx");
-
-
 
 		//floor 
 		const planeSize = 150;
@@ -439,32 +330,7 @@ var animate = function () {
 	renderer.render(scene, camera);
 	labelRenderer.render(scene, camera);
 }; //spawns a room
-function spawnRoom(color, x, y, z, url, name) {
-	objLoader.load('emptyroom.obj', function (object) {
-		scene.add(object);
 
-		addTag(name, object);
-
-		//getting the size of the room
-		let cubeBoundingBox = new THREE.Box3().setFromObject(object);
-		let boxSize = new THREE.Vector3();
-		cubeBoundingBox.getSize(boxSize);
-		// console.log("BoxSize.x: " + boxSize.x);
-		mesh.receiveShadow = true;
-		mesh.castShadow = true;
-		object.position.set(x, y, z)
-		object.name = "room";
-		object.traverse(function (obj) {
-			if (obj.isMesh) {
-				obj.material.color.set(color);
-			}
-		});
-		object.userData = {
-			URL: url,
-			TAGNAME: name
-		};
-	});
-}
 
 function addTag(tagName, object) {
 	//textlabel
@@ -476,74 +342,6 @@ function addTag(tagName, object) {
 	label.visible = false;
 	label.name = "tag";
 	object.add(label);
-}
-
-function SpawnFBXRoom(color, x, y, z, url, name, room) {
-	const fbxLoader = new FBXLoader()
-	fbxLoader.load(
-		'assets/' + room,
-		(object) => {
-			object.scale.set(.05, .05, .05);
-			mesh.receiveShadow = true;
-			mesh.castShadow = true;
-			addTag(name, object);
-			object.position.set(x, y, z)
-			object.name = "room";
-			object.traverse(function (obj) {
-				if (obj.isMesh) {
-					obj.material.color.set(color);
-				}
-			});
-			object.userData = {
-				URL: url,
-				TAGNAME: name
-			};
-			scene.add(object)
-		},
-		(xhr) => {
-			console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-		},
-		(error) => {
-			console.log(error)
-		}
-	)
-}
-
-function spawnCostumRoom(x, y, z, width, height, length, name) { //spawns costum room
-
-	console.log(x, y, z, width, height, length);
-	const cubeGeo = new THREE.BoxBufferGeometry(
-		width,
-		height,
-		length
-	);
-	const cubeGeoParent = new THREE.BoxBufferGeometry(
-		0.5,
-		0.5,
-		0.5
-	);
-	const cubeMat = new THREE.MeshPhongMaterial({
-		color: colorYellow
-	});
-	const mesh = new THREE.Mesh(cubeGeo, cubeMat.clone());
-	mesh.castShadow = true;
-	mesh.receiveShadow = true;
-	// mesh.position.set(x, height / 2, z);
-	mesh.name = "CostumRoom";
-
-	//creating parent object 
-	const CostumRoomParent = new THREE.Mesh(cubeGeoParent, cubeMat);
-	// CostumRoomParent.material.visible = false;
-	CostumRoomParent.position.set(x, height / 2, z);
-	CostumRoomParent.name = "CostumRoomParent";
-	CostumRoomParent.userData = {
-		URL: "http://stackoverflow.com",
-		TAGNAME: name
-	};
-	scene.add(CostumRoomParent);
-	CostumRoomParent.add(mesh);
-	addTag(name, CostumRoomParent)
-	CostumRoomParent.add(label);
 }
 
 function onWindowResize() { //resizes window

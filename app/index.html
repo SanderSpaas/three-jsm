@@ -9,6 +9,16 @@
     <style>
       body {
         margin: 0;
+        /* background-color: black; */
+      }
+      #containerBg {
+        /* background-image: url("assets/background.jpg"); */
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      #container {
+        /* padding-left: 25%; */
+        /* padding-right: 25%; */
       }
       .label {
         background-color: rgb(255, 255, 255);
@@ -22,12 +32,33 @@
         /* background: #e0e0e0;
     box-shadow: 20px 20px 60px #b3b3b3, -20px -20px 60px #ffffff; */
       }
+      section {
+        display: flex;
+      }
+      #sidebar {
+        width: calc(100vw *0.15);
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 6px 5px 15px 1px rgba(52, 52, 52, 0.82);
+      }
     </style>
     <script src="../build/bundle.js" defer></script>
   </head>
 
   <script src="https://unpkg.com/easy-file-saver"></script>
   <body>
-    <div id="container"></div>
+    <section>
+      <!-- <div id="sidebar">
+        <nav>
+          <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="index.html">Team</a></li>
+            <li><a href="index.html">Calender</a></li>
+            <li><a href="index.html">Marketplace</a></li>
+          </ul>
+        </nav>
+      </div> -->
+      <div id="containerBg"><div id="container"></div></div>
+    </section>
   </body>
 </html>
