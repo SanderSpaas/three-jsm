@@ -46425,20 +46425,7 @@
 				}
 				if (INTERSECTED !== undefined && INTERSECTED !== null) {
 					// console.log(previousIntersection)
-					if (previousIntersection !== INTERSECTED.parent) {
-						// INTERSECTED.parent.detach();
-						// controls.enabled = true;
-						// console.log(INTERSECTED.parent.children.length);
-						// for (j = 0; j < INTERSECTED.parent.children.length; j++) {
-						//     if (INTERSECTED.parent.children[j].type === 'Mesh') {
-						//         INTERSECTED.parent.children[j].material.emissive.setHex(INTERSECTED.currentHex);
-						//         console.log("removing color from", INTERSECTED.parent.children[j].type);
-						//     }
-						//     if (INTERSECTED.parent.children[j].name === 'tag') {
-						//         INTERSECTED.parent.children[j].visible = false;
-						//         // console.log('deselecting tag', objectGroup.children[j]);
-						//     }
-						// }
+					if (previousIntersection !== INTERSECTED.parent ) {
 						if (previousIntersection !== undefined) {
 							// console.log(previousIntersection);
 							for (let j = 0; j < previousIntersection.children.length; j++) {
