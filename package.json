@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c \"rollup_config.js\"",
+    "build": "rollup -c \"rollup_config.js\" --watch",
     "start": "serve"
   },
   "author": "Mugen87",
   "license": "MIT",
   "dependencies": {
-    "three": "0.137.5"
+    "three": "0.143.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "13.1.3",

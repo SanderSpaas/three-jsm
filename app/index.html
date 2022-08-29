@@ -1,15 +1,33 @@
 <html lang="en">
-	<head>
-		<title>My three.js app</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				margin: 0;
-			}
-		</style>
-		<script src="../build/bundle.js" defer></script>
-	</head>
-<body>
-</body>
+  <head>
+    <title>My three.js app</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <style>
+      body {
+        margin: 0;
+      }
+      .label {
+        background-color: rgb(255, 255, 255);
+        border-radius: 3px;
+        text-align: center;
+        width: fit-content;
+        padding: 5px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        border: 1px solid;
+        /* visibility: hidden; */
+        /* background: #e0e0e0;
+    box-shadow: 20px 20px 60px #b3b3b3, -20px -20px 60px #ffffff; */
+      }
+    </style>
+    <script src="../build/bundle.js" defer></script>
+  </head>
+
+  <script src="https://unpkg.com/easy-file-saver"></script>
+  <body>
+    <div id="container"></div>
+  </body>
 </html>

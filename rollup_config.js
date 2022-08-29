@@ -10,5 +10,6 @@ export default {
 			file: 'build/bundle.js'
 		}
 	],
-	plugins: [ resolve(), terser() ]
+	// plugins: [ resolve(), terser() ]
+	plugins: [resolve()]
 };
