@@ -92,7 +92,7 @@ class App {
 
 		{ //scene loaders
 			scene = new THREE.Scene();
-			fetch("assets/scene(10).json")
+			fetch("assets/scene(11).json")
 				.then((response) => response.json())
 				.then((json) => createScene(json));
 
@@ -112,17 +112,16 @@ class App {
 						}
 					}
 				}
-				scene.traverse(function (child) {
-					if (child.isMesh) {
-						console.log("Giving shadow");
-						child.castShadow = true;
-						child.receiveShadow = true;
-						child.position.y = 0;
-					}
-				});
+				// scene.traverse(function (child) {
+				// 	if (child.isMesh) {
+				// 		console.log("Giving shadow");
+				// 		child.castShadow = true;
+				// 		child.receiveShadow = true;
+				// 		child.position.y = 0;
+				// 	}
+				// });
 			}
 		}
-
 
 		camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.z = 100;
@@ -192,11 +191,11 @@ class App {
 		const onMouseMove = (event) => {
 			// calculate pointer position in normalized device coordinates
 			// (-1 to +1) for both components
-			var rect = renderer.domElement.getBoundingClientRect();
-			pointer.x = ((event.clientX - rect.left) / (rect.width - rect.left)) * 2 - 1;
-			pointer.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
-			// pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-			// pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+			// var rect = renderer.domElement.getBoundingClientRect();
+			// pointer.x = ((event.clientX - rect.left) / (rect.width - rect.left)) * 2 - 1;
+			// pointer.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
 			raycaster.setFromCamera(pointer, camera);
 			const intersects = raycaster.intersectObjects(scene.children, true);
@@ -275,8 +274,7 @@ class App {
 							if (previousIntersection.children[j].type === 'Mesh') {
 								previousIntersection.children[j].material.emissive.setHex(INTERSECTED.currentHex);
 								// console.log("removing color from the previous ones", previousIntersection.parent.children[j].type);
-							}
-							if (previousIntersection.children[j].name === 'tag') {
+							} else if (previousIntersection.children[j].name === 'tag') {
 								previousIntersection.children[j].visible = false;
 								// console.log('deselecting tag', objectGroup.children[j]);
 							}
@@ -314,19 +312,9 @@ class App {
 		window.addEventListener('resize', onWindowResize, false);
 		control.addEventListener('mouseDown', function () {
 			controls.enabled = false;
-			// control.object.updateMatrix();
-
 		})
 		control.addEventListener('mouseUp', function () {
 			controls.enabled = true;
-			// var target = new THREE.Vector3(); // create once an reuse it
-			// control.object.getWorldPosition(target);
-			// console.log("world pos: ", target);
-
-			// if (control.object.position.y < 0) {
-			// 	console.log("triggered below 0 ")
-			// 	control.object.position.y = 0;
-			// }
 		})
 
 		window.addEventListener('keydown', function (event) {
@@ -356,16 +344,6 @@ class App {
 			}
 
 		})
-		// Converts from degrees to radians.
-		Math.degToRad = function (degrees) {
-			return degrees * Math.PI / 180;
-		};
-		// spawnCostumRoom(5, 0, 5, 5, 4, 7, "edit me");
-		// spawnRoom(colorYellow, -40.991732766624885, 0, -15.226050214000935, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room");
-		// spawnRoom(colorYellow, -33.10596524027343, 0, -14.468243335405898, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room");
-		// SpawnFBXRoom(colorYellow, -40.991732766624885, 0, -15.226050214000935, "https://spatial.io/s/Brainstorming-Room-61e96723c2ff6c0001207dfa?share=640962037014139923&utm_source=%2Fspaces", "Board room", "rec_3x1.5.fbx");
-
-
 
 		//floor 
 		const planeSize = 150;
@@ -510,8 +488,6 @@ function SpawnFBXRoom(color, x, y, z, url, name, room) {
 }
 
 function spawnCostumRoom(x, y, z, width, height, length, name) { //spawns costum room
-
-	console.log(x, y, z, width, height, length);
 	const cubeGeo = new THREE.BoxBufferGeometry(
 		width,
 		height,
@@ -549,6 +525,7 @@ function spawnCostumRoom(x, y, z, width, height, length, name) { //spawns costum
 function onWindowResize() { //resizes window
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
+	labelRenderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
