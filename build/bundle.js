@@ -54685,7 +54685,7 @@
 				// pointer.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
 				pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 				pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+				// console.log('x:', pointer.x, "y:", pointer.y);
 				raycaster.setFromCamera(pointer, camera);
 				const intersects = raycaster.intersectObjects(scene.children, true);
 				if (intersects.length > 0) {
@@ -54697,6 +54697,7 @@
 							INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 
 							var objectGroup = intersects[0].object.parent;
+
 							if (!objectGroup.isScene) {
 								{ //editing of objects in the scene
 									//de parent van het object zoeken en dan alle kinderen aanspreken
@@ -54704,9 +54705,9 @@
 									for (let j = 0; j < controllers.length; j++) {
 										controllers[j].destroy();
 									}
-
+									
 									information.add(objectGroup.children[0], 'name');
-									information.add(objectGroup, 'id').listen();
+									information.add(objectGroup, 'id');
 									console.log(objectGroup);
 									for (let j = 0; j < objectGroup.children.length; j++) {
 										if (objectGroup.children[j].type === 'Mesh') {
@@ -54724,13 +54725,13 @@
 										}
 									}
 
-									information.add(objectGroup.userData, 'URL').listen();
+									information.add(objectGroup.userData, 'URL');
 
 									//position of the room
 									folderLocal.add(objectGroup.position, 'x').listen();
 									folderLocal.add(objectGroup.position, 'z').listen();
-									scale.add(objectGroup.scale, 'x').listen();
-									scale.add(objectGroup.scale, 'z').listen();
+									scale.add(objectGroup.scale, 'x');
+									scale.add(objectGroup.scale, 'z');
 								}
 
 								for (let j = 0; j < objectGroup.children.length; j++) {
@@ -54742,7 +54743,7 @@
 										objectGroup.children[j].visible = true;
 										// console.log('deselecting tag', objectGroup.children[j]);
 										//editing the text of tags 
-										information.add(objectGroup.children[j].element, 'textContent').listen().onChange(function (value) {
+										information.add(objectGroup.children[j].element, 'textContent').onChange(function (value) {
 											objectGroup.userData.TAGNAME = value;
 										});
 									}
@@ -54781,7 +54782,6 @@
 				// (-1 to +1) for both components
 				pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 				pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
 				raycaster.setFromCamera(pointer, camera);
 				const intersects = raycaster.intersectObjects(scene.children, true);
 				if (intersects.length > 0) {

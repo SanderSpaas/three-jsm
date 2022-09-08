@@ -51,7 +51,7 @@ import saveFile from "easy-file-saver";
 let camera, scene, renderer, controls, labelRenderer, control, objLoader, floor, hemiLight, dirLight;
 //all the gui vars 
 let folderLocal, scale, information, gui, controllers, guiRooms;
-let xPos, yPos, zPos, xScale, yScale, zScale, tagText;
+let xPos, yPos, zPos, xScale, yScale, zScale, tagText, nameGUI;
 
 const rooms = {
 	Spawn2x2: function () {
@@ -196,7 +196,7 @@ class App {
 			// pointer.y = -((event.clientY - rect.top) / (rect.bottom - rect.top)) * 2 + 1;
 			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+			// console.log('x:', pointer.x, "y:", pointer.y);
 			raycaster.setFromCamera(pointer, camera);
 			const intersects = raycaster.intersectObjects(scene.children, true);
 			if (intersects.length > 0) {
@@ -208,6 +208,7 @@ class App {
 						INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
 
 						var objectGroup = intersects[0].object.parent;
+
 						if (!objectGroup.isScene) {
 							{ //editing of objects in the scene
 								//de parent van het object zoeken en dan alle kinderen aanspreken
@@ -215,9 +216,9 @@ class App {
 								for (let j = 0; j < controllers.length; j++) {
 									controllers[j].destroy();
 								}
-
-								information.add(objectGroup.children[0], 'name');
-								information.add(objectGroup, 'id').listen();
+								
+								nameGUI = information.add(objectGroup.children[0], 'name');
+								information.add(objectGroup, 'id');
 								console.log(objectGroup);
 								for (let j = 0; j < objectGroup.children.length; j++) {
 									if (objectGroup.children[j].type === 'Mesh') {
@@ -235,13 +236,13 @@ class App {
 									}
 								}
 
-								let url = information.add(objectGroup.userData, 'URL').listen();
+								let url = information.add(objectGroup.userData, 'URL');
 
 								//position of the room
 								xPos = folderLocal.add(objectGroup.position, 'x').listen();
 								zPos = folderLocal.add(objectGroup.position, 'z').listen();
-								xScale = scale.add(objectGroup.scale, 'x').listen();
-								zScale = scale.add(objectGroup.scale, 'z').listen();
+								xScale = scale.add(objectGroup.scale, 'x');
+								zScale = scale.add(objectGroup.scale, 'z');
 							}
 
 							for (let j = 0; j < objectGroup.children.length; j++) {
@@ -253,7 +254,7 @@ class App {
 									objectGroup.children[j].visible = true;
 									// console.log('deselecting tag', objectGroup.children[j]);
 									//editing the text of tags 
-									tagText = information.add(objectGroup.children[j].element, 'textContent').listen().onChange(function (value) {
+									tagText = information.add(objectGroup.children[j].element, 'textContent').onChange(function (value) {
 										objectGroup.userData.TAGNAME = value;
 									});
 								}
@@ -292,7 +293,6 @@ class App {
 			// (-1 to +1) for both components
 			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
 			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
 			raycaster.setFromCamera(pointer, camera);
 			const intersects = raycaster.intersectObjects(scene.children, true);
 			if (intersects.length > 0) {
